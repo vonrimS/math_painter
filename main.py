@@ -1,56 +1,67 @@
-import numpy as np
-from PIL import Image
+import datetime
+import random
 
-class Canvas:
-    """
-    Object where all shapes are going to be drawn
-    """
+from canvas import Canvas
+from shapes import Rectangle, Square
 
-    def __init__(self, height, width, color):
-        self.height = height
-        self.width = width
-        self.color = color
-        # create a 3d numpy array of zeros
-        self.data = np.zeros((self.height, self.width, 3), dtype=np.uint8)
-        # change [0,0,0] with user given values for color
-        self.data[:] = self.color
+# get canvas width and height from the user
+width = int(input('Enter canvas width (px): '))
+height = int(input('Enter canvas height (px): '))
+print(f'...canvas size: {width} x {height}\n')
 
-    def make(self, imagepath):
-        """Convert the current array into an image file"""
-        img= Image.fromarray(self.data, 'RGB')
-        img.save(imagepath)
+# make a dictionary of color codes and prompt for color
+colors = {'white': (255, 255, 255), 'black': (0,0,0)}
+base_canvas_color = input('Choose your canvas base color (white or black): ').lower()
+print(f'...canvas base color: {base_canvas_color}\n')
 
-class Rectangle:
-    def __init__(self, x, y, width, height, color):
-        self.x = x
-        self.y = y
-        self.height = height
-        self.width = width
-        self.color = color
+# create a canvas object with user input
+canvas = Canvas(height, width, colors[base_canvas_color])
 
-    def draw(self, canvas):
-        """Draws itself into the canvas"""
-        # changes a slice of the array with new values
-        canvas.data[self.x: self.x + self.height, self.y: self.y + self.width] = self.color
+while True:
+    shape_type = input('What do you like to draw? (enter \'r\' for rectangle, \'s\' for square, \'q\' for quit): ').lower()
+    # ask the user for rectangle data and create rectangle if user entered 'r'
+    if shape_type == 'r':
+        rec_x = int(input('Enter x of the rectangle: '))
+        rec_y = int(input('Enter y of the rectangle: '))
+        rec_w = int(input('Enter width of the rectangle: '))
+        rec_h = int(input('Enter height of the rectangle: '))
+        rec_red = int(input('How much red should the rectangle have: '))
+        rec_green = int(input('How much green should the rectangle have: '))
+        rec_blue = int(input('How much blue should the rectangle have: '))
+        # create the rectangle
+        r1 = Rectangle(rec_x, rec_y, rec_w, rec_h, (rec_red, rec_green, rec_blue))
+        r1.draw(canvas)
+    # ask the user for square data and create square if user entered 's'
+    if shape_type == 's':
+        sqr_x = int(input('Enter x of the square: '))
+        sqr_y = int(input('Enter y of the square: '))
+        sqr_s = int(input('Enter side width of the square: '))
+        sqr_red = int(input('How much red should the square have: '))
+        sqr_green = int(input('How much green should the square have: '))
+        sqr_blue = int(input('How much blue should the square have: '))
+        # create the square
+        s1 = Square(sqr_x, sqr_y, sqr_s, (sqr_red, sqr_green, sqr_blue))
+        s1.draw(canvas)
 
-class Square:
-    def __init__(self, x, y, side, color):
-        self.x = x
-        self.y = y
-        self.side = side
-        self.color = color
+    # randomly fill the canvas
+    if shape_type == 'a':
+        qnt = int(input('How much geometry figures do you like to put on canvas: '))
+        i = 0
+        while i < qnt:
+            rand_x = random.randrange(width)
+            rand_y = random.randrange(height)
+            rand_w = random.randrange(width*0.3)
+            rand_h = random.randrange(height*0.3)
+            rand_red = random.randrange(255)
+            rand_green = random.randrange(255)
+            rand_blue = random.randrange(255)
+            Rectangle(rand_x, rand_y, rand_w, rand_h, (rand_red, rand_green, rand_blue)).draw(canvas)
+            i += 1
 
-    def draw(self, canvas):
-        """Draws itself into the canvas"""
-        # changes a slice of the array with new values
-        canvas.data[self.x: self.x + self.side, self.y: self.y + self.side] = self.color
+    # break the loop if user entered 'q' to quit program running
+    if shape_type == 'q':
+        break
 
+timestamp = datetime.datetime.now().strftime('%Y.%m.%d_%H.%M.%S')
+canvas.make(f'canvas_{timestamp}.png')
 
-
-
-canvas = Canvas(400, 500, (255, 255, 255))
-r1 = Rectangle(100, 60, 70, 155, (100, 200, 125))
-r1.draw(canvas)
-s1 = Square(2, 50, 30, (0, 100, 222))
-s1.draw(canvas)
-canvas.make('canvas.png')
