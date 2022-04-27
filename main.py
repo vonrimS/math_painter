@@ -1,0 +1,29 @@
+class Canvas:
+    def __init__(self, a, b, color):
+        self.a = a
+        self.b = b
+        self.color = color
+
+    def make(self):
+        pass
+
+class Rectangle:
+    def __init__(self, x, y, width, height, color):
+        self.x = x
+        self.y = y
+        self.height = height
+        self.width = width
+        self.color = color
+
+    def draw(self, canvas):
+        pass
+
+class Square:
+    def __init__(self, x, y, a, color):
+        self.x = x
+        self.y = y
+        self.a = a
+        self.color = color
+
+    def draw(self, canvas):
+        pass
